@@ -51,7 +51,7 @@ RUN apk add -U --no-cache --virtual=build-dependencies \
     musl-dev libgcc openssl-dev jpeg-dev zlib-dev freetype-dev build-base \
     lcms2-dev openjpeg-dev python3-dev make cmake clang clang-dev ninja \
 
-    && apk add --no-cache gcc tesseract-ocr zlib jpeg libjpeg freetype openjpeg curl python3 vim bash openssh-client \
+    && apk add --no-cache gcc tesseract-ocr zlib jpeg libjpeg freetype openjpeg curl python3 vim bash openssh-client git \
     && curl https://bootstrap.pypa.io/get-pip.py | python3 \
     && curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
     && chmod 755 /usr/share/jenkins \
