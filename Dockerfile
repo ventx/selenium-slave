@@ -28,7 +28,17 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FROM alpine:3.6
+FROM openjdk:8-jdk-alpine
+
+ARG user=jenkins
+ARG group=jenkins
+ARG uid=10000
+ARG gid=10000
+ARG VERSION=3.23
+ARG AGENT_WORKDIR=/var/${user}_home/agent
+ENV HOME /var/${user}_home
+RUN addgroup -g ${gid} ${group}
+RUN adduser -h $HOME -u ${uid} -G ${group} -D ${user}
 
 ENV TESSDATA https://raw.githubusercontent.com/tesseract-ocr/tessdata/master/eng.traineddata
 ENV OPENCV https://github.com/opencv/opencv/archive/3.3.0.tar.gz
@@ -42,7 +52,10 @@ RUN apk add -U --no-cache --virtual=build-dependencies \
     lcms2-dev openjpeg-dev python3-dev make cmake clang clang-dev ninja \
 
     && apk add --no-cache gcc tesseract-ocr zlib jpeg libjpeg freetype openjpeg curl python3 vim bash openssh-client \
-    && curl https://bootstrap.pypa.io/get-pip.py | python3 
+    && curl https://bootstrap.pypa.io/get-pip.py | python3 \
+    && curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+    && chmod 755 /usr/share/jenkins \
+    && chmod 644 /usr/share/jenkins/slave.jar  
 RUN  ln -s /usr/bin/python3 /usr/bin/python \
     && curl $TESSDATA -o /usr/share/tessdata/eng.traineddata \
     && ln -s /usr/include/locale.h /usr/include/xlocale.h \
