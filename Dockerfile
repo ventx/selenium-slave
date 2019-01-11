@@ -5,10 +5,10 @@ ARG group=jenkins
 ARG uid=10000
 ARG gid=10000
 ARG VERSION=3.23
-ARG AGENT_WORKDIR=/var/${user}_home/agent
-ENV HOME /var/${user}_home
+ARG AGENT_WORKDIR=/home/${user}/agent
+ENV HOME /home/${user}
 RUN addgroup -gid ${gid} ${group}
-RUN adduser --home $HOME --uid ${uid} --ingroup ${group} ${user}
+RUN adduser --home $HOME --uid ${uid} --ingroup ${group} ${user} --disabled-password --gecos ""
 
 RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
     && chmod 755 /usr/share/jenkins \
@@ -19,4 +19,11 @@ RUN tar -xvzf /opt/allure-2.7.0.tgz --directory /opt/ \
     && rm /opt/allure-2.7.0.tgz
  
 ENV PATH="/opt/allure-2.7.0/bin:${PATH}"
-WORKDIR /work
+
+VOLUME /home/${user}/.jenkins
+VOLUME ${AGENT_WORKDIR}
+WORKDIR /home/${user}
+
+COPY jenkins-slave /usr/local/bin/jenkins-slave
+
+ENTRYPOINT ["jenkins-slave"]
