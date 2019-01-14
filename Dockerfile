@@ -9,7 +9,7 @@ ARG AGENT_WORKDIR=/home/${user}/agent
 ENV HOME /home/${user}
 RUN addgroup -gid ${gid} ${group}
 RUN adduser --home $HOME --uid ${uid} --ingroup ${group} ${user} --disabled-password --gecos ""
-
+RUN apt-get update && apt-get install -y openjdk-8-jdk
 RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
     && chmod 755 /usr/share/jenkins \
     && chmod 644 /usr/share/jenkins/slave.jar  
