@@ -20,7 +20,11 @@ RUN tar -xvzf /opt/allure-2.7.0.tgz --directory /opt/ \
  
 ENV PATH="/opt/allure-2.7.0/bin:${PATH}"
 
+RUN mkdir /home/${user}/.jenkins && mkdir -p ${AGENT_WORKDIR}
 VOLUME /home/${user}/.jenkins
 VOLUME ${AGENT_WORKDIR}
 WORKDIR /home/${user}
 
+COPY jenkins-slave /usr/local/bin/jenkins-slave
+
+ENTRYPOINT ["jenkins-slave"]
